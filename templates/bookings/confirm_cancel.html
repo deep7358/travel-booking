@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Cancel Booking #{{ booking.pk }}</h2>
+<p>Trip: {{ booking.travel_option }}</p>
+<p>Seats: {{ booking.seats }}</p>
+<form method="post">
+  {% csrf_token %}
+  <button class="btn btn-danger">Confirm Cancel</button>
+  <a class="btn btn-secondary" href="{% url 'bookings:mine' %}">Back</a>
+</form>
+{% endblock %}

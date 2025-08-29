@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings - TravelHub{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2><i class="fas fa-ticket-alt me-2"></i>My Bookings</h2>
+      <a href="{% url 'trips:list' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Book New Trip
+      </a>
+    </div>
+
+{% if bookings %}
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th><i class="fas fa-hashtag me-1"></i>Booking ID</th>
+        <th><i class="fas fa-route me-1"></i>Trip Details</th>
+        <th><i class="fas fa-chair me-1"></i>Seats</th>
+        <th><i class="fas fa-rupee-sign me-1"></i>Total Amount</th>
+        <th><i class="fas fa-info-circle me-1"></i>Status</th>
+        <th><i class="fas fa-calendar me-1"></i>Booked On</th>
+        <th><i class="fas fa-cogs me-1"></i>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td><strong>#{{ b.pk }}</strong></td>
+        <td>
+          <div>
+            <span class="badge bg-{% if b.travel_option.type == 'Flight' %}primary{% elif b.travel_option.type == 'Train' %}success{% else %}warning{% endif %} me-2">
+              <i class="fas fa-{% if b.travel_option.type == 'Flight' %}plane{% elif b.travel_option.type == 'Train' %}train{% else %}bus{% endif %} me-1"></i>
+              {{ b.travel_option.type }}
+            </span>
+          </div>
+          <div class="mt-1">
+            <strong>{{ b.travel_option.source }}</strong>
+            <i class="fas fa-arrow-right mx-2 text-muted"></i>
+            <strong>{{ b.travel_option.destination }}</strong>
+          </div>
+          <small class="text-muted">
+            <i class="fas fa-calendar me-1"></i>{{ b.travel_option.departure|date:"M d, Y" }}
+            <i class="fas fa-clock me-1 ms-2"></i>{{ b.travel_option.departure|date:"g:i A" }}
+          </small>
+        </td>
+        <td>
+          <span class="badge bg-info">{{ b.seats }} seat{{ b.seats|pluralize }}</span>
+        </td>
+        <td>
+          <span class="h6 text-success">₹{{ b.total_price }}</span>
+        </td>
+        <td>
+          {% if b.status == 'Confirmed' %}
+            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Confirmed</span>
+          {% else %}
+            <span class="badge bg-secondary"><i class="fas fa-times me-1"></i>Cancelled</span>
+          {% endif %}
+        </td>
+        <td>
+          {{ b.booking_date|date:"M d, Y" }}<br>
+          <small class="text-muted">{{ b.booking_date|date:"g:i A" }}</small>
+        </td>
+        <td>
+          {% if b.status == 'Confirmed' %}
+            <a href="{% url 'bookings:cancel' b.pk %}" class="btn btn-warning btn-sm">
+              <i class="fas fa-times me-1"></i>Cancel
+            </a>
+          {% else %}
+            <span class="text-muted">—</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="mt-4">
+  <div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    <strong>Note:</strong> You can cancel your booking anytime before departure. Refunds will be processed within 3-5 business days.
+  </div>
+</div>
+{% else %}
+<div class="text-center py-5">
+  <i class="fas fa-ticket-alt fa-4x text-muted mb-3"></i>
+  <h3>No bookings yet</h3>
+  <p class="text-muted">Start exploring and book your first trip with us!</p>
+  <a href="{% url 'trips:list' %}" class="btn btn-primary btn-lg">
+    <i class="fas fa-search me-2"></i>Explore Trips
+    </a>
+  </div>
+  {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+INFO 2025-08-29 21:04:43,009 autoreload 7752 2956 Watching for file changes with StatReloader
+INFO 2025-08-29 21:08:30,628 autoreload 7752 2956 C:\Users\welcome\OneDrive\Desktop\travel\travel_booking\settings.py changed, reloading.
+INFO 2025-08-29 21:08:31,788 autoreload 17364 18212 Watching for file changes with StatReloader
+INFO 2025-08-29 21:12:55,221 autoreload 17364 18212 C:\Users\welcome\OneDrive\Desktop\travel\travel_booking\settings.py changed, reloading.
+INFO 2025-08-29 21:12:55,983 autoreload 18760 18204 Watching for file changes with StatReloader
+INFO 2025-08-29 22:32:24,173 autoreload 4204 10464 Watching for file changes with StatReloader
+WARNING 2025-08-29 22:32:29,045 base 4204 17676 Session data corrupted
+INFO 2025-08-29 22:32:29,081 basehttp 4204 17676 "GET / HTTP/1.1" 200 50822
+INFO 2025-08-29 22:32:29,169 basehttp 4204 17676 "GET /static/css/styles.css HTTP/1.1" 304 0

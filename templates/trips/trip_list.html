@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Search Trips - TravelHub{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+  <div class="hero-content text-center text-white">
+    <h1 class="hero-title">Explore the World with TravelHub</h1>
+    <p class="hero-subtitle">Book flights, trains, and buses to your dream destinations</p>
+  </div>
+</div>
+
+<!-- Travel Type Tabs -->
+<div class="travel-tabs">
+  <div class="tab-container">
+    <button class="tab-btn active" data-type="all">
+      <i class="fas fa-globe me-2"></i>All
+    </button>
+    <button class="tab-btn" data-type="Flight">
+      <i class="fas fa-plane me-2"></i>Flights
+    </button>
+    <button class="tab-btn" data-type="Train">
+      <i class="fas fa-train me-2"></i>Trains
+    </button>
+    <button class="tab-btn" data-type="Bus">
+      <i class="fas fa-bus me-2"></i>Buses
+    </button>
+  </div>
+</div>
+
+<!-- Search Form -->
+<div class="search-container">
+  <div class="search-form-wrapper">
+    <form method="get" class="modern-search-form" id="searchForm">
+      <div class="search-row">
+        <div class="search-field">
+          <label><i class="fas fa-map-marker-alt"></i> From</label>
+          <input type="text" name="source" placeholder="Departure city" value="{{ request.GET.source }}" list="cities-from">
+          <datalist id="cities-from">
+            <option value="Delhi">
+            <option value="Mumbai">
+            <option value="Bangalore">
+            <option value="Kolkata">
+            <option value="Jaipur">
+            <option value="Agra">
+            <option value="Chennai">
+            <option value="Hyderabad">
+            <option value="Pune">
+            <option value="Kanpur">
+          </datalist>
+        </div>
+        
+        <div class="search-field">
+          <label><i class="fas fa-map-marker-alt"></i> To</label>
+          <input type="text" name="destination" placeholder="Destination city" value="{{ request.GET.destination }}" list="cities-to">
+          <datalist id="cities-to">
+            <option value="Delhi">
+            <option value="Mumbai">
+            <option value="Bangalore">
+            <option value="Kolkata">
+            <option value="Jaipur">
+            <option value="Agra">
+            <option value="Chennai">
+            <option value="Hyderabad">
+            <option value="Pune">
+            <option value="Kanpur">
+          </datalist>
+        </div>
+        
+        <div class="search-field">
+          <label><i class="fas fa-calendar"></i> Departure</label>
+          <input type="date" name="date" value="{{ request.GET.date }}" min="{{ today|date:'Y-m-d' }}">
+        </div>
+        
+        <div class="search-field">
+          <label><i class="fas fa-users"></i> Travelers</label>
+          <select name="travelers">
+            <option value="1">1 Traveler</option>
+            <option value="2">2 Travelers</option>
+            <option value="3">3 Travelers</option>
+            <option value="4">4+ Travelers</option>
+          </select>
+        </div>
+        
+        <div class="search-btn-container">
+          <button type="submit" class="search-btn">
+            <i class="fas fa-search"></i> Search
+          </button>
+        </div>
+      </div>
+      
+      <input type="hidden" name="type" id="selectedType" value="{{ request.GET.type }}">
+    </form>
+  </div>
+</div>
+
+<!-- Results Section -->
+{% if trips %}
+<div class="results-section">
+  <div class="results-header">
+    <h3><i class="fas fa-list me-2"></i>{{ trips|length }} Trip{{ trips|length|pluralize }} Found</h3>
+    <div class="sort-options">
+      <select class="form-select">
+        <option>Sort by Price (Low to High)</option>
+        <option>Sort by Departure Time</option>
+        <option>Sort by Duration</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="trips-grid">
+    {% for t in trips %}
+    <div class="trip-card">
+      <div class="trip-card-header">
+        <div class="trip-type">
+          <span class="type-badge type-{{ t.type|lower }}">
+            <i class="fas fa-{% if t.type == 'Flight' %}plane{% elif t.type == 'Train' %}train{% else %}bus{% endif %}"></i>
+            {{ t.type }}
+          </span>
+        </div>
+        <div class="trip-price">
+          <span class="price">₹{{ t.price }}</span>
+          <small>per person</small>
+        </div>
+      </div>
+      
+      <div class="trip-route">
+        <div class="route-info">
+          <div class="departure">
+            <h4>{{ t.source }}</h4>
+            <p>{{ t.departure|date:"h:i A" }}</p>
+          </div>
+          
+          <div class="route-line">
+            <div class="route-icon">
+              <i class="fas fa-{% if t.type == 'Flight' %}plane{% elif t.type == 'Train' %}train{% else %}bus{% endif %}"></i>
+            </div>
+            <div class="line"></div>
+          </div>
+          
+          <div class="arrival">
+            <h4>{{ t.destination }}</h4>
+            <p>{{ t.departure|date:"M d, Y" }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="trip-details">
+        <div class="detail-item">
+          <i class="fas fa-chair"></i>
+          {% if t.available_seats > 10 %}
+            <span class="text-success">{{ t.available_seats }} seats available</span>
+          {% elif t.available_seats > 0 %}
+            <span class="text-warning">{{ t.available_seats }} seats left</span>
+          {% else %}
+            <span class="text-danger">Sold out</span>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="trip-actions">
+        {% if t.available_seats > 0 %}
+          <a href="{% url 'trips:detail' t.pk %}" class="btn-book">
+            <i class="fas fa-ticket-alt me-2"></i>Book Now
+          </a>
+        {% else %}
+          <button class="btn-unavailable" disabled>
+            <i class="fas fa-times me-2"></i>Unavailable
+          </button>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
+<div class="no-results">
+  <div class="no-results-content">
+    <i class="fas fa-search fa-4x mb-3"></i>
+    <h3>No trips found</h3>
+    <p>Try different cities or dates to find available options</p>
+    <div class="popular-routes">
+      <h5>Popular Routes</h5>
+      <div class="route-suggestions">
+        <a href="?source=Delhi&destination=Mumbai" class="route-suggestion">Delhi → Mumbai</a>
+        <a href="?source=Delhi&destination=Bangalore" class="route-suggestion">Delhi → Bangalore</a>
+        <a href="?source=Mumbai&destination=Delhi" class="route-suggestion">Mumbai → Delhi</a>
+        <a href="?source=Delhi&destination=Kolkata" class="route-suggestion">Delhi → Kolkata</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<script>
+// Tab functionality
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    
+    const type = this.dataset.type;
+    document.getElementById('selectedType').value = type === 'all' ? '' : type;
+  });
+});
+
+// Set active tab based on current search
+const currentType = '{{ request.GET.type }}';
+if (currentType) {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.type === currentType) {
+      btn.classList.add('active');
+    }
+  });
+}
+</script>
+{% endblock %}

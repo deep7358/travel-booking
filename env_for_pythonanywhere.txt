@@ -1,0 +1,11 @@
+# Copy this content to create .env file on PythonAnywhere
+# File location: /home/DeepGupta/travel/.env
+
+DEBUG=False
+SECRET_KEY=django-insecure-change-this-to-a-secure-50-character-key-for-production-safety
+ALLOWED_HOSTS=localhost,127.0.0.1,DeepGupta.pythonanywhere.com
+USE_SQLITE=True
+
+# IMPORTANT: Generate a secure SECRET_KEY using this command in PythonAnywhere console:
+# python3.11 -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+# Then replace the SECRET_KEY above with the generated value
