@@ -13,10 +13,12 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # Security Settings
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-change-this-in-production')
 DEBUG = env('DEBUG', default=False)
+ALLOWED_HOSTS = [h.strip() for h in env('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',') if h.strip()]
 
-# ALLOWED_HOSTS - Updated for easy deployment
-ALLOWED_HOSTS = [h.strip() for h in env('ALLOWED_HOSTS', default='localhost,127.0.0.1,deepanshugupta.pythonanywhere.com').split(',') if h.strip()]
-
+# Add Render hostname automatically
+render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if render_host:
+    ALLOWED_HOSTS.append(render_host)
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
